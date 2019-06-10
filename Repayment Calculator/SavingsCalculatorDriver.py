@@ -1,8 +1,10 @@
+import datetime
+
 class SavingsGoal:
 
     def __init__(self):
         SavingsName = "Tesla"
-        TotalPaymentAmount = 50000
+        TotalPaymentAmount = 0
         Phase1_TotPaymentAmount = 0
         Phase2_TotPaymentAmount = 0
         Phase3_TotPaymentAmount = 0
@@ -13,7 +15,7 @@ class SavingsGoal:
         Phase2_Payments = []
         Phase3_Payments = []
 
-        self.TotalPaymentAmount = input("Amt: ")
+        self.TotalPaymentAmount = 500.00
         try:
             self.TotalPaymentAmount = float(self.TotalPaymentAmount)
             print("Input number value is: ", self.TotalPaymentAmount)
@@ -43,13 +45,18 @@ class SavingsGoal:
         Phase3_Payments.append(float(Phase3Tot_TotalPaymentAmount)*.15)
         Phase3_Payments.append(float(Phase3Tot_TotalPaymentAmount)*.10)
 
-        sum_payments = 0
+        # sum_payments = 0
 
-        for payment in Phase1_Payments[0:3]:
-            sum_payments += payment
-            print(sum_payments)
+        # for payment in Phase1_Payments[0:3]:
+        #     sum_payments += payment
+        #     print(sum_payments)
 
         #  TODO: Take the Start and End Date from the user and divide the days between the two dates into 3 phase increments with 15 payments. So divide the total amount of days by 3, and divide the total amount of days by 15
+
+        start_date = datetime.datetime(2019, 8, 25)
+        diff = start_date - datetime.datetime.now()
+        print(diff)
+
         exit
 
 
