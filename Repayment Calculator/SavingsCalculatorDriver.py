@@ -57,9 +57,11 @@ class SavingsGoal:
         # August 25, 2018 - Start Date of Loan Repayment
 
         date_now = datetime.datetime.now()
+        print("Today's Date is: " + str(date_now.strftime("%A" + " " + "%x")))
+
         mininmumStart_date = date_now + datetime.timedelta(days=92)
-        print("Now:" + str(date_now))
-        print("Minimum: " + str(mininmumStart_date))
+        print("Minimum Start Date: " +
+              str(mininmumStart_date.strftime("%x")))
 
         userYear_date = 0
         userMonth_date = 0
