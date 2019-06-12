@@ -24,27 +24,8 @@ class SavingsGoal:
         #     print("That's not an int!")
         #     print("No.. input string is not an Integer. It's a string")
 
-        self.Phase1Tot_TotalPaymentAmount = self.TotalPaymentAmount*.33
-        self.Phase2Tot_TotalPaymentAmount = self.TotalPaymentAmount*.50
-        self.Phase3Tot_TotalPaymentAmount = self.TotalPaymentAmount*.17
-
-        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.2)
-        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.2)
-        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.2)
-        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.15)
-        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.25)
-
-        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.10)
-        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.15)
-        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.25)
-        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.30)
-        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.20)
-
-        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.30)
-        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.25)
-        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.20)
-        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.15)
-        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.10)
+        self.DivyItUp(self.TotalPaymentAmount, Phase1_Payments,
+                      Phase2_Payments, Phase3_Payments)
 
         # sum_payments = 0
 
@@ -60,7 +41,7 @@ class SavingsGoal:
         print("Today's Date is: " + str(date_now.strftime("%A" + " " + "%x")))
 
         mininmumStart_date = date_now + datetime.timedelta(days=92)
-        print("Minimum Start Date: " +
+        print("Minimum Payment Plan Start Date: " +
               str(mininmumStart_date.strftime("%x")))
 
         userYear_date = 0
@@ -86,10 +67,44 @@ class SavingsGoal:
         userStart_date = datetime.datetime(
             2019, 8, 25)
 
-        if mininmumStart_date < date_now:  # less than means "in the past", this asks, does the minimum start date come before the NOW date? result: false
-            print("True")
+        print("The User Start Date is: " + str(userStart_date.strftime("%x")))
+            # less than means "in the past", this asks, does the minimum start date come before the NOW date? result: false
+        if userStart_date < mininmumStart_date:
+            print("Sorry, your user start date is invalid!")
         else:
-            print("False")
+            print("Acceptable user start date!")
+
+    def Phase3_DivyItUp(self, Phase3_Payments):
+        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.30)
+        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.25)
+        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.20)
+        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.15)
+        Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.10)
+
+    def Phase2_DivyItUp(self, Phase2_Payments):
+        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.10)
+        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.15)
+        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.25)
+        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.30)
+        Phase2_Payments.append(float(self.Phase2Tot_TotalPaymentAmount)*.20)
+
+    def Phase1_DivyItUp(self, Phase1_Payments):
+        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.2)
+        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.2)
+        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.2)
+        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.15)
+        Phase1_Payments.append(float(self.Phase1Tot_TotalPaymentAmount)*.25)
+
+    def DivyItUp(self, TotalPaymentAmount, Phase1_Payments, Phase2_Payments, Phase3_Payments):
+        TotalPaymentAmount = self.TotalPaymentAmount
+
+        self.Phase1Tot_TotalPaymentAmount = TotalPaymentAmount*.33
+        self.Phase2Tot_TotalPaymentAmount = TotalPaymentAmount*.50
+        self.Phase3Tot_TotalPaymentAmount = TotalPaymentAmount*.17
+
+        self.Phase1_DivyItUp(Phase1_Payments)
+        self.Phase2_DivyItUp(Phase2_Payments)
+        self.Phase3_DivyItUp(Phase3_Payments)
 
         # diff = userStart_date - date_now
         # if diff.days < 91:
