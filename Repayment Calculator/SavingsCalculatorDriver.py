@@ -15,6 +15,9 @@ class SavingsGoal:
         Phase1_Payments = []
         Phase2_Payments = []
         Phase3_Payments = []
+        userYear_date = 0
+        userMonth_date = 0
+        userDay_date = 0
 
         self.TotalPaymentAmount = 500.00
         # try:
@@ -44,10 +47,6 @@ class SavingsGoal:
         print("Minimum Payment Plan Start Date: " +
               str(mininmumStart_date.strftime("%x")))
 
-        userYear_date = 0
-        userMonth_date = 0
-        userDay_date = 0
-
     #    try:
     #         userYear_date = int(input("Enter Year: "))
     #     except (UnboundLocalError, ValueError) as e:
@@ -64,15 +63,28 @@ class SavingsGoal:
     #         print("Invalid Input, Error: %s" % e)
 
         # Testing Purposes
-        userStart_date = datetime.datetime(
-            2019, 8, 25)
+        userStart_date = datetime.datetime(2019, 9, 25)
+        userEnd_date = datetime.datetime(2023, 10, 26)
 
         print("The User Start Date is: " + str(userStart_date.strftime("%x")))
+        print("The User End Date is: " + str(userEnd_date.strftime("%x")))
+
             # less than means "in the past", this asks, does the minimum start date come before the NOW date? result: false
         if userStart_date < mininmumStart_date:
             print("Sorry, your user start date is invalid!")
         else:
             print("Acceptable user start date!")
+
+        Tot_RepaymentDays = userEnd_date - userStart_date
+        
+        DaysPerPhase_RepaymentDays = Tot_RepaymentDays.days/3
+        if int(DaysPerPhase_RepaymentDays)%2 != 0:
+            round(float(DaysPerPhase_RepaymentDays))
+
+        print("Amount of Days between Start & End: "+ str(Tot_RepaymentDays.days))
+
+    # TODO: Calculate the Days per Phase, if DaysPerPhase is not a whole number, round it
+
 
     def Phase3_DivyItUp(self, Phase3_Payments):
         Phase3_Payments.append(float(self.Phase3Tot_TotalPaymentAmount)*.30)
