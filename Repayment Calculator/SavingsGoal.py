@@ -9,68 +9,175 @@ class SavingsGoal(object):
         self.Phase1Tot_TotalPaymentAmount = self.TotalPaymentAmount*.33
         self.Phase2Tot_TotalPaymentAmount = self.TotalPaymentAmount*.50
         self.Phase3Tot_TotalPaymentAmount = self.TotalPaymentAmount*.17
-        validStartDate = False
+        self.Phase1_Payments = [0,0,0,0,0]
+        self.Phase2_Payments = [0,0,0,0,0]
+        self.Phase3_Payments = [0,0,0,0,0]
+        self.validStartDate = False
         self.userStartDate = None
+        self.ranStartOnce = False
 
-    def setTotalAmount(self, newAmount):
-        self.TotalPaymentAmount = newAmount
+    def start(self):
+        Pass1 = True
+        Pass2 = True
+        user_input = ''
+        downPaymentAmt = 0
+
+        if self.validStartDate == False:
+            print("validStartDate is False. Run (object).setStartDate")
+            return 1
+        else:
+            print("----------------------------------------\nStart of start()")
+
+        while Pass1:
+            user_input = (
+                input("\nWould you like to plan a down payment (y/N): "))
+
+            if user_input != 'y' and user_input != 'N':
+                print("Invalid Input\n")
+
+            if user_input == 'y' or user_input == 'N':
+                Pass1 = False
+                if user_input == 'y':
+                    self.DivyAllPhases()
+
+                    for payment in self.Phase1_Payments[0:3]:
+                        downPaymentAmt += payment
+
+                    print("The downpayment amt is: " + str(downPaymentAmt) +
+                          "\t(Due on: " + str(self.userStartDate.strftime("%x")) + str(")\n\n"))
+
+                if user_input == 'N':
+                    self.DivyAllPhases()
+                    print("Alrighty, Moving on!\n\n")
+
+        while Pass2:
+            user_input = (input("Is this a long-term goal? (y/N): "))
+
+            if user_input != 'y' and user_input != 'N':
+                print("Invalid Input\n")
+
+            if user_input == 'y' or user_input == 'N':
+                Pass2 = False
+                if user_input == 'N':
+                    print("Gotcha!\n\n")
+
+                if user_input == 'y':
+                    print("I will create a 3-year, 5-year, and 10-year plan")
+
+            # if user_input == 'y' or user_input == 'N':
+
+        print("\nEnd of start()\n----------------------------------------")
+        self.ranStartOnce = True
 
     def setStartDate(self):
-        monthsWithout31 = [2, 4, 6, 9, 11]
-        userYear = None
-        userMonth = None
-        userDay = None
+            monthsWithout31 = [2, 4, 6, 9, 11]
+            userYear = None
+            userMonth = None
+            userDay = None
 
-        # * Take the user's year, it can't be less than the current year
-        user_input = input("What is the Year of the start date?\n")
-        try:
-            val = int(user_input)
-            if len(user_input) != 4 or val < datetime.datetime.now().year:
-                raise ValueError
-            else:
-                userYear = val
-                print("User Year Captured (NOT Saved!)\n")
-        except ValueError as error:
-            print('Your value is not an acceptable year\nNo values were saved.')
-            return 1
+            print(
+                "\n----------------------------------------\nStart of setStartDate()\n\n")
 
-        # * Month
-        user_input = input("What is the Month of the start date?\n")
-        try:
-            val = int(user_input)
-            if val < 1 or val > 12:
-                raise ValueError
+            # * Take the user's year, it can't be less than the current year
+            user_input = input("What is the Year of the start date?\n")
+            try:
+                val = int(user_input)
+                if len(user_input) != 4 or val < datetime.datetime.now().year:
+                    raise ValueError
+                else:
+                    userYear = val
+                    print("User Year Captured (NOT Saved!)\n")
+            except (UnboundLocalError, ValueError) as error:
+                print('Your value is not an acceptable year\nNo values were saved.')
+                return 1
 
-            if (userYear == datetime.datetime.now().year and val <= datetime.datetime.now().month):
-                raise ValueError
-            else:
-                userMonth = val
-                print("User Month Captured (NOT Saved Yet!)\n")
-        except ValueError as error:
-            print('Your value is not an acceptable month')
-            return 2
+            # * Month
+            user_input = input("What is the Month of the start date?\n")
+            try:
+                val = int(user_input)
+                if val < 1 or val > 12:
+                    raise ValueError
 
-        # * Day
-        user_input = input("What is the Day of the start date?\n")
-        try:
-            val = int(user_input)
-            if val < 1 or val > 31:
-                raise ValueError
+                if (userYear == datetime.datetime.now().year and val <= datetime.datetime.now().month):
+                    raise ValueError
+                else:
+                    userMonth = val
+                    print("User Month Captured (NOT Saved Yet!)\n")
+            except (UnboundLocalError, ValueError) as error:
+                print('Your value is not an acceptable month')
+                return 2
 
-            if val == 31 and userMonth in monthsWithout31:
-                raise ValueError
-            else:
-                userDay = val
-                print("User Day Captured (Saving Soon)\n")
-        except ValueError as error:
-            print('Your value is not an acceptable month\day combination')
-            return 3
+            # * Day
+            user_input = input("What is the Day of the start date?\n")
+            try:
+                val = int(user_input)
+                if val < 1 or val > 31:
+                    raise ValueError
 
-        self.userStartDate = datetime.datetime(userYear, userMonth, userDay)
-        validStartDate = True
-        print("User Start Date Saved!")
-        return 0
+                if val == 31 and userMonth in monthsWithout31:
+                    raise ValueError
+                else:
+                    userDay = val
+                    print("User Day Captured (Saving Soon)\n")
+            except (UnboundLocalError, ValueError) as error:
+                print('Your value is not an acceptable month \ day combination')
+                return 3
+
+            print("User Start Date Saved!")
+            print(
+                "\nEnd of setStartDate() - SUCCESS\n----------------------------------------")
+            self.userStartDate = datetime.datetime(userYear, userMonth, userDay)
+            self.validStartDate = True
+            return 0
+
+    def DivyPhase1Amount(self):
+        self.Phase1_Payments[0] = float(self.Phase1Tot_TotalPaymentAmount)*.2
+        self.Phase1_Payments[1] = float(self.Phase1Tot_TotalPaymentAmount)*.2
+        self.Phase1_Payments[2] = float(self.Phase1Tot_TotalPaymentAmount)*.2
+        self.Phase1_Payments[3] = float(self.Phase1Tot_TotalPaymentAmount)*.15
+        self.Phase1_Payments[4] = float(self.Phase1Tot_TotalPaymentAmount)*.25
+
+    def DivyPhase2Amount(self):
+        self.Phase2_Payments[0] = float(self.Phase2Tot_TotalPaymentAmount)*.10
+        self.Phase2_Payments[1] = float(self.Phase2Tot_TotalPaymentAmount)*.15
+        self.Phase2_Payments[2] = float(self.Phase2Tot_TotalPaymentAmount)*.25
+        self.Phase2_Payments[3] = float(self.Phase2Tot_TotalPaymentAmount)*.30
+        self.Phase2_Payments[4] = float(self.Phase2Tot_TotalPaymentAmount)*.20
+
+    def DivyPhase3Amount(self):
+        self.Phase3_Payments[0] = float(self.Phase3Tot_TotalPaymentAmount)*.30
+        self.Phase3_Payments[1] = float(self.Phase3Tot_TotalPaymentAmount)*.25
+        self.Phase3_Payments[2] = float(self.Phase3Tot_TotalPaymentAmount)*.20
+        self.Phase3_Payments[3] = float(self.Phase3Tot_TotalPaymentAmount)*.15
+        self.Phase3_Payments[4] = float(self.Phase3Tot_TotalPaymentAmount)*.10
+
+    def DivyAllPhases(self):
+        self.DivyPhase1Amount()
+        self.DivyPhase2Amount()
+        self.DivyPhase3Amount()
+
+    def setTotalAmount(self, newAmount):
+        print(
+            "\n----------------------------------------\nStart of setTotalAmount()")
+
+        if self.ranStartOnce == True:
+            print("----------------------------------------\nstart() was ran at least once before after this, it will be rerun after this to account for the adjusted Total amount")
+
+        self.TotalPaymentAmount = newAmount
+        self.reCalibrateAmounts()
+        self.DivyAllPhases()
+
+        print(
+            "\nEnd of setTotalAmount() - SUCCESS - New Amount: " + str(self.TotalPaymentAmount) + "\n----------------------------------------")
+
+        if self.ranStartOnce == True:
+            print("Rerunning start() for you")
+            self.start()
+
+    def reCalibrateAmounts(self):
+        self.Phase1Tot_TotalPaymentAmount = self.TotalPaymentAmount*.33
+        self.Phase2Tot_TotalPaymentAmount = self.TotalPaymentAmount*.50
+        self.Phase3Tot_TotalPaymentAmount = self.TotalPaymentAmount*.17
 
     def getAmount(self):
-        print(self.TotalPaymentAmount)
         return self.TotalPaymentAmount
