@@ -15,6 +15,9 @@ class SavingsGoal:
         Phase1_Payments = []
         Phase2_Payments = []
         Phase3_Payments = []
+        Phase1_Dates = []
+        Phase2_Dates = []
+        Phase3_Dates = []
         userYear_date = 0
         userMonth_date = 0
         userDay_date = 0
@@ -64,7 +67,7 @@ class SavingsGoal:
 
         # Testing Purposes
         userStart_date = datetime.datetime(2019, 9, 25)
-        userEnd_date = datetime.datetime(2023, 10, 26)
+        userEnd_date = datetime.datetime(2026, 10, 26)
 
         print("The User Start Date is: " + str(userStart_date.strftime("%x")))
         print("The User End Date is: " + str(userEnd_date.strftime("%x")))
@@ -77,13 +80,44 @@ class SavingsGoal:
 
         Tot_RepaymentDays = userEnd_date - userStart_date
         
-        DaysPerPhase_RepaymentDays = Tot_RepaymentDays.days/3
+        DaysPerPhase_RepaymentDays = round(float(Tot_RepaymentDays.days/3))
+        DaysBetweenPayments_RepaymentDays = (round(float(Tot_RepaymentDays.days/15)))
+
         if int(DaysPerPhase_RepaymentDays)%2 != 0:
             round(float(DaysPerPhase_RepaymentDays))
 
         print("Amount of Days between Start & End: "+ str(Tot_RepaymentDays.days))
+        print("Initial Days per Phase = " + str(DaysPerPhase_RepaymentDays))
 
-    # TODO: Calculate the Days per Phase, if DaysPerPhase is not a whole number, round it
+        print("Initial Days between Phase Payments = " + str(DaysBetweenPayments_RepaymentDays))
+
+        # * Phase Ranges (Display the date ranges)
+        Phase1End_date = userStart_date + datetime.timedelta(DaysPerPhase_RepaymentDays)
+        Phase2End_date = Phase1End_date + datetime.timedelta(DaysPerPhase_RepaymentDays)
+        Phase3End_date = Phase2End_date + datetime.timedelta(DaysPerPhase_RepaymentDays)
+
+        print("\nThe User Start Date is: " + str(userStart_date.strftime("%x")))
+        print("Phase 1 Ends " + str(Phase1End_date.strftime("%x")))
+        print("Phase 2 Ends " + str(Phase2End_date.strftime("%x")))
+        print("Phase 3 Ends " + str(Phase3End_date.strftime("%x")))
+        print("The End Date is: " + str(userEnd_date.strftime("%x")))
+
+        # if userEnd_date < Phase3End_date:
+        #     print("\tThe User's End Date conflicts with the payment schedule: Rescheduling End Date")
+        #     print("\tThe User End Date was: " + str(userEnd_date.strftime("%x")))
+        #     print("\tPhase 3 was scheduled to end: " + str(Phase3End_date.strftime("%x")))
+        #     userEnd_date = Phase3End_date
+        #     userEnd_date += datetime.timedelta(7)
+        #     print("The New End Date is: " + str(userEnd_date.strftime("%x")))
+
+        # * Phase 1 Payment Date Ranges
+
+
+
+        print("\n\nBreakdown!\nPhase 1:")
+
+
+    # TODO: Create a breakdown of when payments are due including the dates
 
 
     def Phase3_DivyItUp(self, Phase3_Payments):
