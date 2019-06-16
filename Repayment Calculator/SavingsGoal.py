@@ -1,4 +1,5 @@
 import datetime
+import calendar
 
 
 class SavingsGoal(object):
@@ -15,6 +16,7 @@ class SavingsGoal(object):
         self.validStartDate = False
         self.userStartDate = None
         self.ranStartOnce = False
+        self.longTermGoal = False
 
     def start(self):
         Pass1 = True
@@ -51,7 +53,7 @@ class SavingsGoal(object):
                     print("Alrighty, Moving on!\n\n")
 
         while Pass2:
-            user_input = (input("Is this a long-term goal? (y/N): "))
+            user_input = (input("Is this a long-term goal? 3+ Years to Complete? (y/N): "))
 
             if user_input != 'y' and user_input != 'N':
                 print("Invalid Input\n")
@@ -59,15 +61,41 @@ class SavingsGoal(object):
             if user_input == 'y' or user_input == 'N':
                 Pass2 = False
                 if user_input == 'N':
-                    print("Gotcha!\n\n")
+                    print("I will create a 3-month, 6-month, 12-month, and 24-month plans!\n\n")
 
                 if user_input == 'y':
-                    print("I will create a 3-year, 5-year, and 10-year plan")
+                    self.longTermGoal = True
+                    print("I will create a 3-year, 5-year, and 10-year plan\n\n")
 
-            # if user_input == 'y' or user_input == 'N':
+            if self.longTermGoal == False:
+                print("The User Start Date is: " + str((self.userStartDate.strftime("%x")))+ "\n")
+                self.breakdown(3)
+                self.breakdown(6)
+                self.breakdown(12)
+                self.breakdown(24)
+            else:
+                pass
+
 
         print("\nEnd of start()\n----------------------------------------")
         self.ranStartOnce = True
+
+    def breakdown(self, monthsToAdd):
+        planEndDate = self.add_months(self.userStartDate, monthsToAdd)
+
+        diff = planEndDate - self.userStartDate
+
+        print("The {}-Month End Date is: ".format(monthsToAdd) + str(planEndDate.strftime("%x")) )
+
+        # ! YOU LEFT OFF HERE
+
+
+    def add_months(self, sourcedate, months):
+        month = sourcedate.month - 1 + months
+        year = sourcedate.year + month // 12
+        month = month % 12 + 1
+        day = min(sourcedate.day, calendar.monthrange(year, month)[1])
+        return datetime.date(year, month, day)
 
     def setStartDate(self):
             monthsWithout31 = [2, 4, 6, 9, 11]
@@ -126,7 +154,7 @@ class SavingsGoal(object):
             print("User Start Date Saved!")
             print(
                 "\nEnd of setStartDate() - SUCCESS\n----------------------------------------")
-            self.userStartDate = datetime.datetime(userYear, userMonth, userDay)
+            self.userStartDate = datetime.date(userYear, userMonth, userDay)
             self.validStartDate = True
             return 0
 
