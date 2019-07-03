@@ -12,16 +12,16 @@ Tesla.start()
 
 #     #  TODO: Take the Start and End Date from the user and divide the days between the two dates into 3 phase increments with 15 payments. So divide the total amount of days by 3, and divide the total amount of days by 15
 
-#     date_now = datetime.datetime.now()
-#     print("Today's Date is: " + str(date_now.strftime("%A" + " " + "%x")))
+# date_now = datetime.datetime.now()
+#  print("Today's Date is: " + str(date_now.strftime("%A" + " " + "%x")))
 
-#     mininmumStart_date = date_now + datetime.timedelta(days=92)
-#     print("Minimum Payment Plan Start Date: " +
-#           str(mininmumStart_date.strftime("%x")))
+#  mininmumStart_date = date_now + datetime.timedelta(days=92)
+#  print("Minimum Payment Plan Start Date: " +
+#        str(mininmumStart_date.strftime("%x")))
 
-#     # Testing Purposes
-#     userStart_date = datetime.datetime(2019, 9, 25)
-#     userEnd_date = datetime.datetime(2026, 10, 26)
+#  # Testing Purposes
+#  userStart_date = datetime.datetime(2019, 9, 25)
+#  userEnd_date = datetime.datetime(2026, 10, 26)
 
 #     print("The User Start Date is: " + str(userStart_date.strftime("%x")))
 #     print("The User End Date is: " + str(userEnd_date.strftime("%x")))
