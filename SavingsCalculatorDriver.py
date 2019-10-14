@@ -2,7 +2,7 @@ from SavingsGoal import SavingsGoal
 
 
 def main():
-    Car = SavingsGoal("Tesla", 50000)
+    Car = SavingsGoal("Nvidia Shield TV", 200)
     Car.start()
 
     exit
