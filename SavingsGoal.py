@@ -1,13 +1,13 @@
 import datetime
 import calendar
-from decimal import *
+from decimal import Decimal
 
 class SavingsGoal(object):
 
     def __init__(self, name, amount):
-        getcontext().prec=2
         self.SavingsName = name
-        self.TotalPaymentAmount = Decimal(amount)
+        self.TotalPaymentAmount = amount
+        self.DownPaymentAmount = None
         self.userStartDate = None
         self.Phase1Tot_TotalPaymentAmount = None  # self.TotalPaymentAmount*.33
         self.Phase2Tot_TotalPaymentAmount = None  # self.TotalPaymentAmount*.50
@@ -24,11 +24,18 @@ class SavingsGoal(object):
         validStartDate = False
         user_input = ''
         downPaymentAmt = 0
+        choice_A = None
+        choice_B = None
+        choice_C = None
+        choice_D = None
+        user_choice_letter = None
 
 
         if self.ranStartOnce == False:
             if not(validStartDate):
-                self.setStartDate()
+                return_val = self.setStartDate()
+                while return_val != 0:
+                    return_val = self.setStartDate()
                 self.DivyAllPhases()
             else:
                 print("----------------------------------------\nStart of start()")
@@ -43,52 +50,110 @@ class SavingsGoal(object):
                 if user_input == 'y':
                     for payment in self.Phase1_Payments[0:3]:
                         downPaymentAmt += payment
-                    print(f'The downpayment amt is: {downPaymentAmt}\t(Due on: {self.userStartDate.strftime("%x")}\n\n')
+                    self.DownPaymentAmount = downPaymentAmt
+                    print(f'The down payment amt is: ${downPaymentAmt}\t(Due on: {self.userStartDate.strftime("%x")})\n\n')
                     break
                 elif user_input == 'N':
                     print("Alrighty, Moving on!\n")
                     break;
 
             while True:
+                pass_loop = False
+
                 user_input = (
                     input("Is this a long-term goal? 3+ Years to Complete? (y/N): "))
 
                 if user_input != 'y' and user_input != 'N':
                     print("Invalid Input\n")
+                    continue
+                elif user_input == 'y' or user_input == 'N':
+                    pass_loop = True
+                
+                if pass_loop == False:
+                    continue
+
 
                 if user_input == 'N':
                     print(
-                        "I will create a 3-month, 6-month, 12-month, and 24-month plans!\n\n")
+                        "I will create a (A) 3-month, (B) 6-month, (C) 12-month, and (D) 24-month plans!\n\n")
                 elif user_input == 'y':
                     self.longTermGoal = True
-                    print("I will create a 3-year, 5-year, and 10-year plan\n\n")
+                    print("I will create a (A) 3-year, (B) 5-year, and (C) 10-year plan\n\n")
 
                 # * This is assuming that the goal is short term. User answers was N
                 if self.longTermGoal == False:
                     print("The User Start Date is: " +
-                          str((self.userStartDate.strftime("%x"))) + "\n")
+                        str((self.userStartDate.strftime("%x"))))
+                    print(f"The User Goal Amount is: ${self.TotalPaymentAmount}\n")
 
-                    self.breakdown(3)
-                    self.breakdown(6)
-                    self.breakdown(12)
-                    self.breakdown(24)
+                    choice_A = self.breakdown(3)
+                    choice_B = self.breakdown(6)
+                    choice_C = self.breakdown(12)
+                    choice_D = self.breakdown(24)
+
+                    while True:
+                        user_choice_letter = input("Which plan would you like? (A) : 3 mo, (B) : 6 mo, (C) : 12 mo, (D) : 24 mo\n")
+
+                        if user_choice_letter != 'A' and user_choice_letter != 'B' and user_choice_letter != 'C' and user_choice_letter != 'D':
+                            print("Invalid Input\n")
+                            continue
+                        else:
+                            print(f"Thank you! You've selected {user_choice_letter}")
+                            break;
+
+                    self.payment_plan_choice(choice_A, choice_B, choice_C, choice_D, user_choice_letter)
+
                     break;
                 elif self.longTermGoal == True:
+                    print("The User Start Date is: " + str((self.userStartDate.strftime("%x"))))
+                    print(f"The User Goal Amount is: ${self.TotalPaymentAmount}\n")
+
+                    choice_A = self.breakdown(36)
+                    choice_B = self.breakdown(60)
+                    choice_C = self.breakdown(120)
+
+                    while True:
+                        user_choice_letter = input("Which plan would you like? (A) : 3 year, (B) : 5 year, (C) : 10 year\n")
+
+                        if user_choice_letter != 'A' and user_choice_letter != 'B' and user_choice_letter != 'C':
+                            print("Invalid Input\n")
+                            continue
+                        else:
+                            print(f"Thank you! You've selected {user_choice_letter}")
+                            break;
+
+                    self.payment_plan_choice(choice_A, choice_B, choice_C, choice_D, user_choice_letter)
                     break;
 
-           
+
         self.ranStartOnce = True
         print("\nEnd of start()\n----------------------------------------")
 
         return 0
 
+    def payment_plan_choice(self, choice_A, choice_B, choice_C, choice_D, user_choice_letter):
+
+        selected_A = 'A'
+        selected_B = 'B'
+        selected_C = 'C'
+        selected_D = 'D'
+
+        # TODO : Finish this function to save and copy the selected array choice into a permanent array
+
+        return
+
     def breakdown(self, monthsToAdd):
         planEndDate = self.add_months(self.userStartDate, monthsToAdd)
-
         diff = planEndDate - self.userStartDate
+        return_array = []
 
-        print("The {}-Month End Date is: ".format(monthsToAdd) +
-              str(planEndDate.strftime("%x")) + " ({} days)\n".format(diff.days))
+        if monthsToAdd > 30:
+            monthsToAdd = int(monthsToAdd/12)
+            print("The {}-Year End Date is: ".format(monthsToAdd) +
+                str(planEndDate.strftime("%x")) + " ({} months)\n".format(int(diff.days/30)))
+        else:
+            print("The {}-Month End Date is: ".format(monthsToAdd) +
+                str(planEndDate.strftime("%x")) + " ({} days)\n".format(int(diff.days/30)))
 
         totalDays = round(float(diff.days))
         daysPerPhase_Interval = round(float(totalDays/3))
@@ -96,7 +161,8 @@ class SavingsGoal(object):
 
         print("Format: Phase 1 Dates\t-\tPhase 2 Dates\t-\tPhase 3 Dates")
 
-        self.phaseDatesPreview(daysPerPhase_Interval)
+        return_array = self.phaseDatesPreview(daysPerPhase_Interval)
+        return return_array
 
     def phaseDatesPreview(self, daysPerPhaseInterval):
         paymentPlanPreviewArray = []
@@ -114,10 +180,10 @@ class SavingsGoal(object):
         for element in range(0,5):
             element2 = element+5
             element3 = element+10
-            print(f"\t{paymentPlanPreviewArray[element]} (${self.Phase1_Payments[element]})\t|\t{paymentPlanPreviewArray[element2]} (${self.Phase2_Payments[element]})\t|\t{paymentPlanPreviewArray[element3]} (${self.Phase3_Payments[element]})")
+            print(f"\t{paymentPlanPreviewArray[element]} (${self.Phase1_Payments[element]})\t\t|\t{paymentPlanPreviewArray[element2]} (${self.Phase2_Payments[element]})\t|\t{paymentPlanPreviewArray[element3]} (${self.Phase3_Payments[element]})")
 
         print("")
-        return 0
+        return paymentPlanPreviewArray
 
 
     def add_months(self, sourcedate, months):
@@ -187,34 +253,31 @@ class SavingsGoal(object):
         return 0
 
     def DivyPhase1Amount(self):
-        getcontext().prec=2
-        self.Phase1_Payments[0] = (self.Phase1Tot_TotalPaymentAmount)*Decimal(.20)
-        self.Phase1_Payments[1] = (self.Phase1Tot_TotalPaymentAmount)*Decimal(.20)
-        self.Phase1_Payments[2] = (self.Phase1Tot_TotalPaymentAmount)*Decimal(.20)
-        self.Phase1_Payments[3] = (self.Phase1Tot_TotalPaymentAmount)*Decimal(.15)
-        self.Phase1_Payments[4] = (self.Phase1Tot_TotalPaymentAmount)*Decimal(.25)
+        self.Phase1_Payments[0] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.20)
+        self.Phase1_Payments[1] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.20)
+        self.Phase1_Payments[2] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.20)
+        self.Phase1_Payments[3] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.15)
+        self.Phase1_Payments[4] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.25)
 
     def DivyPhase2Amount(self):
-        getcontext().prec=2
-        self.Phase2_Payments[0] = (self.Phase2Tot_TotalPaymentAmount)*Decimal(.10)
-        self.Phase2_Payments[1] = (self.Phase2Tot_TotalPaymentAmount)*Decimal(.15)
-        self.Phase2_Payments[2] = (self.Phase2Tot_TotalPaymentAmount)*Decimal(.25)
-        self.Phase2_Payments[3] = (self.Phase2Tot_TotalPaymentAmount)*Decimal(.30)
-        self.Phase2_Payments[4] = (self.Phase2Tot_TotalPaymentAmount)*Decimal(.20)
+        self.Phase2_Payments[0] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.10)
+        self.Phase2_Payments[1] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.15)
+        self.Phase2_Payments[2] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.25)
+        self.Phase2_Payments[3] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.30)
+        self.Phase2_Payments[4] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.20)
 
     def DivyPhase3Amount(self):
-        getcontext().prec=2
-        self.Phase3_Payments[0] = (self.Phase3Tot_TotalPaymentAmount)*Decimal(.30)
-        self.Phase3_Payments[1] = (self.Phase3Tot_TotalPaymentAmount)*Decimal(.25)
-        self.Phase3_Payments[2] = (self.Phase3Tot_TotalPaymentAmount)*Decimal(.20)
-        self.Phase3_Payments[3] = (self.Phase3Tot_TotalPaymentAmount)*Decimal(.15)
-        self.Phase3_Payments[4] = (self.Phase3Tot_TotalPaymentAmount)*Decimal(.10)
+        self.Phase3_Payments[0] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.30)
+        self.Phase3_Payments[1] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.25)
+        self.Phase3_Payments[2] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.20)
+        self.Phase3_Payments[3] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.15)
+        self.Phase3_Payments[4] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.10)
 
     def DivyAllPhases(self):
         if self.Phase1Tot_TotalPaymentAmount == None:
-            self.Phase1Tot_TotalPaymentAmount = self.TotalPaymentAmount*Decimal(.33)
-            self.Phase2Tot_TotalPaymentAmount = self.TotalPaymentAmount*Decimal(.50)
-            self.Phase3Tot_TotalPaymentAmount = self.TotalPaymentAmount*Decimal(.17)
+            self.Phase1Tot_TotalPaymentAmount = self.TotalPaymentAmount*.33
+            self.Phase2Tot_TotalPaymentAmount = self.TotalPaymentAmount*.50
+            self.Phase3Tot_TotalPaymentAmount = self.TotalPaymentAmount*.17
 
         self.DivyPhase1Amount()
         self.DivyPhase2Amount()
