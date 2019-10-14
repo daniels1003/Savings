@@ -9,13 +9,14 @@ class SavingsGoal(object):
         self.TotalPaymentAmount = amount
         self.DownPaymentAmount = None
         self.userStartDate = None
+        self.paymentPlan = [[None, None, None, None, None],[None, None, None, None, None],[None, None, None, None, None]]
         self.Phase1Tot_TotalPaymentAmount = None  # self.TotalPaymentAmount*.33
         self.Phase2Tot_TotalPaymentAmount = None  # self.TotalPaymentAmount*.50
         self.Phase3Tot_TotalPaymentAmount = None  # self.TotalPaymentAmount*.17
         self.Phase1_Payments = [0, 0, 0, 0, 0]
         self.Phase2_Payments = [0, 0, 0, 0, 0]
         self.Phase3_Payments = [0, 0, 0, 0, 0]
-        self.Phase_Dates = [[], [], []]
+        self.Phase_Dates = [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]]
         self.userStartDate = None
         self.ranStartOnce = False
         self.longTermGoal = False
@@ -123,11 +124,22 @@ class SavingsGoal(object):
                             break;
 
                     self.payment_plan_choice(choice_A, choice_B, choice_C, choice_D, user_choice_letter)
+                    self.construct_payment_plan(self.Phase_Dates, self.Phase1_Payments, self.Phase2_Payments, self.Phase3_Payments)
                     break;
-
-
         self.ranStartOnce = True
         print("\nEnd of start()\n----------------------------------------")
+        return 0
+
+    def construct_payment_plan(self, Phase_Dates, Phase1_Payments, Phase2_Payments, Phase3_Payments):
+
+        for element in range(0,5):
+            self.paymentPlan[0][element] = (self.Phase_Dates[0][element], Phase1_Payments[element])
+
+        for element in range(0,5):
+            self.paymentPlan[1][element] = (self.Phase_Dates[1][element], Phase2_Payments[element])
+
+        for element in range(0,5):
+            self.paymentPlan[2][element] = (self.Phase_Dates[2][element], Phase3_Payments[element])
 
         return 0
 
@@ -137,10 +149,103 @@ class SavingsGoal(object):
         selected_B = 'B'
         selected_C = 'C'
         selected_D = 'D'
+        exclude_D = False
 
-        # TODO : Finish this function to save and copy the selected array choice into a permanent array
+        # TODO : PLEASE SHORTEN THIS TRANSFER FOR LOOP INTO A FUNCTION!
 
-        return
+        if choice_D is None:
+            exclude_D = True
+        elif choice_D is not None:
+            pass
+
+        if exclude_D:
+            if user_choice_letter == selected_A:
+                for element in range(0,5):
+                    temp = choice_A[element]
+                    self.Phase_Dates[0][element] = temp
+
+                for element in range(5,10):
+                    temp = choice_A[element]
+                    self.Phase_Dates[1][element-5] = temp
+
+                for element in range(10,15):
+                    temp = choice_A[element]
+                    self.Phase_Dates[2][element-10] = temp
+
+            if user_choice_letter == selected_B:
+                for element in range(0,5):
+                    temp = choice_B[element]
+                    self.Phase_Dates[0][element] = temp
+
+                for element in range(5,10):
+                    temp = choice_B[element]
+                    self.Phase_Dates[1][element-5] = temp
+
+                for element in range(10,15):
+                    temp = choice_B[element]
+                    self.Phase_Dates[2][element-10] = temp
+            if user_choice_letter == selected_C:
+                for element in range(0,5):
+                    temp = choice_C[element]
+                    self.Phase_Dates[0][element] = temp
+
+                for element in range(5,10):
+                    temp = choice_C[element]
+                    self.Phase_Dates[1][element-5] = temp
+
+                for element in range(10,15):
+                    temp = choice_C[element]
+                    self.Phase_Dates[2][element-10] = temp
+        else:
+            if user_choice_letter == selected_A:
+                for element in range(0,5):
+                    temp = choice_A[element]
+                    self.Phase_Dates[0][element] = temp
+
+                for element in range(5,10):
+                    temp = choice_A[element]
+                    self.Phase_Dates[1][element-5] = temp
+
+                for element in range(10,15):
+                    temp = choice_A[element]
+                    self.Phase_Dates[2][element-10] = temp
+            if user_choice_letter == selected_B:
+                for element in range(0,5):
+                    temp = choice_B[element]
+                    self.Phase_Dates[0][element] = temp
+
+                for element in range(5,10):
+                    temp = choice_B[element]
+                    self.Phase_Dates[1][element-5] = temp
+
+                for element in range(10,15):
+                    temp = choice_B[element]
+                    self.Phase_Dates[2][element-10] = temp
+            if user_choice_letter == selected_C:
+                for element in range(0,5):
+                    temp = choice_C[element]
+                    self.Phase_Dates[0][element] = temp
+
+                for element in range(5,10):
+                    temp = choice_C[element]
+                    self.Phase_Dates[1][element-5] = temp
+
+                for element in range(10,15):
+                    temp = choice_C[element]
+                    self.Phase_Dates[2][element-10] = temp
+            if user_choice_letter == selected_D:
+                for element in range(0,5):
+                    temp = choice_D[element]
+                    self.Phase_Dates[0][element] = temp
+
+                for element in range(5,10):
+                    temp = choice_D[element]
+                    self.Phase_Dates[1][element-5] = temp
+
+                for element in range(10,15):
+                    temp = choice_D[element]
+                    self.Phase_Dates[2][element-10] = temp
+        return 0
 
     def breakdown(self, monthsToAdd):
         planEndDate = self.add_months(self.userStartDate, monthsToAdd)
