@@ -9,14 +9,20 @@ class SavingsGoal(object):
         self.TotalPaymentAmount = amount
         self.DownPaymentAmount = None
         self.userStartDate = None
-        self.paymentPlan = [[None, None, None, None, None],[None, None, None, None, None],[None, None, None, None, None]]
-        self.Phase1Tot_TotalPaymentAmount = None  # self.TotalPaymentAmount*.33
-        self.Phase2Tot_TotalPaymentAmount = None  # self.TotalPaymentAmount*.50
-        self.Phase3Tot_TotalPaymentAmount = None  # self.TotalPaymentAmount*.17
-        self.Phase1_Payments = [0, 0, 0, 0, 0]
-        self.Phase2_Payments = [0, 0, 0, 0, 0]
-        self.Phase3_Payments = [0, 0, 0, 0, 0]
-        self.Phase_Dates = [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]]
+        self.paymentPlan = [[None, None, None, None, None],
+                            [None, None, None, None, None],
+                            [None, None, None, None, None]]
+
+        self.Phase1Tot_TotalPaymentAmount = None 
+        self.Phase2Tot_TotalPaymentAmount = None  
+        self.Phase3Tot_TotalPaymentAmount = None  
+        self.Phase_Payments =  [[0,0,0,0,0], 
+                                [0,0,0,0,0], 
+                                [0,0,0,0,0]]
+
+        self.Phase_Dates = [[0,0,0,0,0], 
+                            [0,0,0,0,0], 
+                            [0,0,0,0,0]]
         self.userStartDate = None
         self.ranStartOnce = False
         self.longTermGoal = False
@@ -37,7 +43,7 @@ class SavingsGoal(object):
                 return_val = self.setStartDate()
                 while return_val != 0:
                     return_val = self.setStartDate()
-                self.DivyAllPhases()
+                self.divyAllPhases()
             else:
                 print("----------------------------------------\nStart of start()")
 
@@ -49,14 +55,14 @@ class SavingsGoal(object):
                     print("Invalid Input\n")
 
                 if user_input == 'y':
-                    for payment in self.Phase1_Payments[0:3]:
-                        downPaymentAmt += payment
+                    for amount in range(0,3):
+                        downPaymentAmt += self.Phase_Payments[0][amount]
                     self.DownPaymentAmount = downPaymentAmt
                     print(f'The down payment amt is: ${downPaymentAmt}\t(Due on: {self.userStartDate.strftime("%x")})\n\n')
                     break
                 elif user_input == 'N':
                     print("Alrighty, Moving on!\n")
-                    break;
+                    break
 
             while True:
                 pass_loop = False
@@ -103,8 +109,7 @@ class SavingsGoal(object):
                             break;
 
                     self.payment_plan_choice(choice_A, choice_B, choice_C, choice_D, user_choice_letter)
-
-                    break;
+                    break
                 elif self.longTermGoal == True:
                     print("The User Start Date is: " + str((self.userStartDate.strftime("%x"))))
                     print(f"The User Goal Amount is: ${self.TotalPaymentAmount}\n")
@@ -124,22 +129,26 @@ class SavingsGoal(object):
                             break;
 
                     self.payment_plan_choice(choice_A, choice_B, choice_C, choice_D, user_choice_letter)
-                    self.construct_payment_plan(self.Phase_Dates, self.Phase1_Payments, self.Phase2_Payments, self.Phase3_Payments)
-                    break;
+                    self.construct_payment_plan(self.Phase_Dates, self.Phase_Payments)
+                    break
+        else:
+            self.construct_payment_plan(self.Phase_Dates, self.Phase_Payments)
+            
+
         self.ranStartOnce = True
         print("\nEnd of start()\n----------------------------------------")
         return 0
 
-    def construct_payment_plan(self, Phase_Dates, Phase1_Payments, Phase2_Payments, Phase3_Payments):
+    def construct_payment_plan(self, Phase_Dates, Phase_Payments):
 
         for element in range(0,5):
-            self.paymentPlan[0][element] = (self.Phase_Dates[0][element], Phase1_Payments[element])
+            self.paymentPlan[0][element] = (self.Phase_Dates[0][element], Phase_Payments[0][element])
 
         for element in range(0,5):
-            self.paymentPlan[1][element] = (self.Phase_Dates[1][element], Phase2_Payments[element])
+            self.paymentPlan[1][element] = (self.Phase_Dates[1][element], Phase_Payments[1][element])
 
         for element in range(0,5):
-            self.paymentPlan[2][element] = (self.Phase_Dates[2][element], Phase3_Payments[element])
+            self.paymentPlan[2][element] = (self.Phase_Dates[2][element], Phase_Payments[2][element])
 
         return 0
 
@@ -258,7 +267,7 @@ class SavingsGoal(object):
                 str(planEndDate.strftime("%x")) + " ({} months)\n".format(int(diff.days/30)))
         else:
             print("The {}-Month End Date is: ".format(monthsToAdd) +
-                str(planEndDate.strftime("%x")) + " ({} days)\n".format(int(diff.days/30)))
+                str(planEndDate.strftime("%x")) + " ({} days)\n".format(int(diff.days)))
 
         totalDays = round(float(diff.days))
         daysPerPhase_Interval = round(float(totalDays/3))
@@ -266,16 +275,16 @@ class SavingsGoal(object):
 
         print("Format: Phase 1 Dates\t-\tPhase 2 Dates\t-\tPhase 3 Dates")
 
-        return_array = self.phaseDatesPreview(daysPerPhase_Interval)
+        return_array = self.phaseDatesPreview(totalDays)
         return return_array
 
-    def phaseDatesPreview(self, daysPerPhaseInterval):
+    def phaseDatesPreview(self, totalDays):
         paymentPlanPreviewArray = []
 
         start = self.userStartDate
-        end = start + datetime.timedelta(daysPerPhaseInterval)
+        end = start + datetime.timedelta(totalDays)
         diff = end - start
-        daysTillNextPayment = diff.days/5
+        daysTillNextPayment = diff.days/15
 
         nextPaymentDate = start
         for paymentDueDate in range(0, 15):
@@ -283,13 +292,11 @@ class SavingsGoal(object):
             paymentPlanPreviewArray.append(nextPaymentDate)
 
         for element in range(0,5):
-            element2 = element+5
-            element3 = element+10
-            print(f"\t{paymentPlanPreviewArray[element]} (${self.Phase1_Payments[element]})\t\t|\t{paymentPlanPreviewArray[element2]} (${self.Phase2_Payments[element]})\t|\t{paymentPlanPreviewArray[element3]} (${self.Phase3_Payments[element]})")
+            print(f"\t{paymentPlanPreviewArray[element]} (${self.Phase_Payments[0][element]})\t\t|\t{paymentPlanPreviewArray[element+5]} (${self.Phase_Payments[1][element]})\t|\t{paymentPlanPreviewArray[element+10]} (${self.Phase_Payments[2][element]})")
+            
 
         print("")
         return paymentPlanPreviewArray
-
 
     def add_months(self, sourcedate, months):
         month = sourcedate.month - 1 + months
@@ -357,59 +364,75 @@ class SavingsGoal(object):
 
         return 0
 
-    def DivyPhase1Amount(self):
-        self.Phase1_Payments[0] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.20)
-        self.Phase1_Payments[1] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.20)
-        self.Phase1_Payments[2] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.20)
-        self.Phase1_Payments[3] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.15)
-        self.Phase1_Payments[4] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.25)
+    def divyPhase1Amount(self):
+        for element in range(0,5):
+            if element != 3 and element != 4:
+                self.Phase_Payments[0][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.20)
+            elif element == 3:
+                self.Phase_Payments[0][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.15)
+            else:
+                self.Phase_Payments[0][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.25)
+        return
 
-    def DivyPhase2Amount(self):
-        self.Phase2_Payments[0] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.10)
-        self.Phase2_Payments[1] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.15)
-        self.Phase2_Payments[2] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.25)
-        self.Phase2_Payments[3] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.30)
-        self.Phase2_Payments[4] = round((float((self.Phase2Tot_TotalPaymentAmount)))*.20)
+    def divyPhase2Amount(self):
+        for element in range(0,5):
+            if element == 0:
+                self.Phase_Payments[1][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.10)
+            elif element == 1:
+                self.Phase_Payments[1][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.15)
+            elif element == 2:
+                self.Phase_Payments[1][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.25)
+            elif element == 3:
+                self.Phase_Payments[1][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.30)
+            elif element == 4:
+                self.Phase_Payments[1][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.20)
+        return
 
-    def DivyPhase3Amount(self):
-        self.Phase3_Payments[0] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.30)
-        self.Phase3_Payments[1] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.25)
-        self.Phase3_Payments[2] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.20)
-        self.Phase3_Payments[3] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.15)
-        self.Phase3_Payments[4] = round((float((self.Phase3Tot_TotalPaymentAmount)))*.10)
+    def divyPhase3Amount(self):
 
-    def DivyAllPhases(self):
+        for element in range(0,5):
+            if element == 0:
+                self.Phase_Payments[2][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.30)
+            elif element == 1:
+                self.Phase_Payments[2][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.25)
+            elif element == 2:
+                self.Phase_Payments[2][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.20)
+            elif element == 3:
+                self.Phase_Payments[2][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.15)
+            elif element == 4:
+                self.Phase_Payments[2][element] = round((float((self.Phase1Tot_TotalPaymentAmount)))*.10)
+        return
+
+    def divyAllPhases(self):
         if self.Phase1Tot_TotalPaymentAmount == None:
             self.Phase1Tot_TotalPaymentAmount = self.TotalPaymentAmount*.33
             self.Phase2Tot_TotalPaymentAmount = self.TotalPaymentAmount*.50
             self.Phase3Tot_TotalPaymentAmount = self.TotalPaymentAmount*.17
 
-        self.DivyPhase1Amount()
-        self.DivyPhase2Amount()
-        self.DivyPhase3Amount()
+        self.divyPhase1Amount()
+        self.divyPhase2Amount()
+        self.divyPhase3Amount()
+        return
 
-    def setTotalAmount(self, newAmount):
+    def setNewTotalAmount(self, newAmount):
         print(
             "\n----------------------------------------\nStart of setTotalAmount()")
 
-        if self.ranStartOnce == True:
-            print("----------------------------------------\nstart() was ran at least once before after this, it will be rerun after this to account for the adjusted Total amount")
-
         self.TotalPaymentAmount = newAmount
         self.reCalibrateAmounts()
-        self.DivyAllPhases()
 
         print(
             "\nEnd of setTotalAmount() - SUCCESS - New Amount: " + str(self.TotalPaymentAmount) + "\n----------------------------------------")
-
-        if self.ranStartOnce == True:
-            print("Rerunning start() for you")
-            self.start()
+        return
 
     def reCalibrateAmounts(self):
         self.Phase1Tot_TotalPaymentAmount = self.TotalPaymentAmount*.33
         self.Phase2Tot_TotalPaymentAmount = self.TotalPaymentAmount*.50
         self.Phase3Tot_TotalPaymentAmount = self.TotalPaymentAmount*.17
+
+        self.divyAllPhases()
+        self.construct_payment_plan(self.Phase_Dates, self.Phase_Payments)
+        return
 
     def getAmount(self):
         return self.TotalPaymentAmount

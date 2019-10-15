@@ -2,8 +2,10 @@ from SavingsGoal import SavingsGoal
 
 
 def main():
-    Car = SavingsGoal("Tesla", 40000)
+    Car = SavingsGoal("Accord", 8000)
     Car.start()
+    Car.setNewTotalAmount(100)
+    print(str(Car.getAmount()))
 
     exit
 
