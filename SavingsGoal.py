@@ -5,7 +5,7 @@ from decimal import Decimal
 class SavingsGoal(object):
 
     def __init__(self, name, amount):
-        """[summary]
+        """Initilization Method - asks user for name and amount, then init-s the other data structures need by the object, all initialized to {None} or {0}
         
         Arguments:
             name {string} -- The name of the SavingsGoal, initialized with the object
