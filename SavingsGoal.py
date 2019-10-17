@@ -5,6 +5,12 @@ from decimal import Decimal
 class SavingsGoal(object):
 
     def __init__(self, name, amount):
+        """[summary]
+        
+        Arguments:
+            name {string} -- The name of the SavingsGoal, initialized with the object
+            amount {int} -- The total amount of money to be saved up
+        """
         self.SavingsName = name
         self.TotalPaymentAmount = amount
         self.DownPaymentAmount = None
