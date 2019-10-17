@@ -3,9 +3,9 @@ from SavingsGoal import SavingsGoal
 
 def main():
     Car = SavingsGoal("Accord", 8000)
-    Car.start()
-    Car.setNewTotalAmount(100)
-    print(str(Car.getAmount()))
+    # Car.start()
+    # Car.setNewTotalAmount(100)
+    print(str(Car.getName()))
 
     exit
 
