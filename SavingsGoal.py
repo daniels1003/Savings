@@ -1,6 +1,27 @@
 import datetime
 import calendar
 from decimal import Decimal
+import itertools
+
+
+
+"""
+Instead of choices_A, B, C, D, being 'None',
+init a payment plan class (struct) that holds [int] years, [int total payments]. [2 dim. array ]
+"""
+
+class PaymentPlant(object): 
+    def __init__(self,years,totalPayments): 
+        self.years = []
+        self.totalPayments = []
+
+
+class Observer(object): 
+    def __init__(self,SavingsGoal): 
+        self.years = []
+        self.totalPayments = []
+
+
 
 class SavingsGoal(object):
 
@@ -33,6 +54,11 @@ class SavingsGoal(object):
         self.userStartDate = None
         self.ranStartOnce = False
         self.longTermGoal = False
+
+        self.plan_choice = 'A'
+        self.plan = []
+        self.long_term_breakdown = {'A':36,'B':60,'C':120} 
+        self.short_term_breakdown = {'A':3,'B':6,'C':12,'D':24} 
 
     def start(self):
         validStartDate = False
@@ -100,11 +126,6 @@ class SavingsGoal(object):
                         str((self.userStartDate.strftime("%x"))))
                     print(f"The User Goal Amount is: ${self.TotalPaymentAmount}\n")
 
-                    choice_A = self.breakdown(3)
-                    choice_B = self.breakdown(6)
-                    choice_C = self.breakdown(12)
-                    choice_D = self.breakdown(24)
-
                     while True:
                         user_choice_letter = input("Which plan would you like? (A) : 3 mo, (B) : 6 mo, (C) : 12 mo, (D) : 24 mo\n")
 
@@ -115,15 +136,12 @@ class SavingsGoal(object):
                             print(f"Thank you! You've selected {user_choice_letter}")
                             break;
 
-                    self.payment_plan_choice(choice_A, choice_B, choice_C, choice_D, user_choice_letter)
+                    self.payment_plan_choice(user_choice_letter)
+                    self.construct_payment_plan(self.Phase_Dates, self.Phase_Payments)
                     break
                 elif self.longTermGoal == True:
                     print("The User Start Date is: " + str((self.userStartDate.strftime("%x"))))
                     print(f"The User Goal Amount is: ${self.TotalPaymentAmount}\n")
-
-                    choice_A = self.breakdown(36)
-                    choice_B = self.breakdown(60)
-                    choice_C = self.breakdown(120)
 
                     while True:
                         user_choice_letter = input("Which plan would you like? (A) : 3 year, (B) : 5 year, (C) : 10 year\n")
@@ -135,7 +153,7 @@ class SavingsGoal(object):
                             print(f"Thank you! You've selected {user_choice_letter}")
                             break;
 
-                    self.payment_plan_choice(choice_A, choice_B, choice_C, choice_D, user_choice_letter)
+                    self.payment_plan_choice(user_choice_letter)
                     self.construct_payment_plan(self.Phase_Dates, self.Phase_Payments)
                     break
         else:
@@ -146,124 +164,48 @@ class SavingsGoal(object):
         print("\nEnd of start()\n----------------------------------------")
         return 0
 
+
     def construct_payment_plan(self, Phase_Dates, Phase_Payments):
 
-        for element in range(0,5):
-            self.paymentPlan[0][element] = (self.Phase_Dates[0][element], Phase_Payments[0][element])
+        print("Constructing payment plan...")
+        for i, element in itertools.product(range(0,3),range(0,5)): 
+            self.paymentPlan[i][element] = (self.Phase_Dates[i][element], Phase_Payments[i][element])
+        print("Payment plan construction finished! \n")
 
-        for element in range(0,5):
-            self.paymentPlan[1][element] = (self.Phase_Dates[1][element], Phase_Payments[1][element])
-
-        for element in range(0,5):
-            self.paymentPlan[2][element] = (self.Phase_Dates[2][element], Phase_Payments[2][element])
-
+        
         return 0
 
-    def payment_plan_choice(self, choice_A, choice_B, choice_C, choice_D, user_choice_letter):
 
-        selected_A = 'A'
-        selected_B = 'B'
-        selected_C = 'C'
-        selected_D = 'D'
-        exclude_D = False
+    def payment_plan_choice(self,user_choice_letter):
 
-        # TODO : PLEASE SHORTEN THIS TRANSFER FOR LOOP INTO A FUNCTION!
 
-        if choice_D is None:
-            exclude_D = True
-        elif choice_D is not None:
-            pass
+        plan_options = {}
+        
+        if self.longTermGoal == True: 
+            plan_options = self.long_term_breakdown
+        else: 
+            plan_options = self.short_term_breakdown
 
-        if exclude_D:
-            if user_choice_letter == selected_A:
-                for element in range(0,5):
-                    temp = choice_A[element]
-                    self.Phase_Dates[0][element] = temp
+        phase_ranges = [0,5,10,15]
 
-                for element in range(5,10):
-                    temp = choice_A[element]
-                    self.Phase_Dates[1][element-5] = temp
-
-                for element in range(10,15):
-                    temp = choice_A[element]
-                    self.Phase_Dates[2][element-10] = temp
-
-            if user_choice_letter == selected_B:
-                for element in range(0,5):
-                    temp = choice_B[element]
-                    self.Phase_Dates[0][element] = temp
-
-                for element in range(5,10):
-                    temp = choice_B[element]
-                    self.Phase_Dates[1][element-5] = temp
-
-                for element in range(10,15):
-                    temp = choice_B[element]
-                    self.Phase_Dates[2][element-10] = temp
-            if user_choice_letter == selected_C:
-                for element in range(0,5):
-                    temp = choice_C[element]
-                    self.Phase_Dates[0][element] = temp
-
-                for element in range(5,10):
-                    temp = choice_C[element]
-                    self.Phase_Dates[1][element-5] = temp
-
-                for element in range(10,15):
-                    temp = choice_C[element]
-                    self.Phase_Dates[2][element-10] = temp
-        else:
-            if user_choice_letter == selected_A:
-                for element in range(0,5):
-                    temp = choice_A[element]
-                    self.Phase_Dates[0][element] = temp
-
-                for element in range(5,10):
-                    temp = choice_A[element]
-                    self.Phase_Dates[1][element-5] = temp
-
-                for element in range(10,15):
-                    temp = choice_A[element]
-                    self.Phase_Dates[2][element-10] = temp
-            if user_choice_letter == selected_B:
-                for element in range(0,5):
-                    temp = choice_B[element]
-                    self.Phase_Dates[0][element] = temp
-
-                for element in range(5,10):
-                    temp = choice_B[element]
-                    self.Phase_Dates[1][element-5] = temp
-
-                for element in range(10,15):
-                    temp = choice_B[element]
-                    self.Phase_Dates[2][element-10] = temp
-            if user_choice_letter == selected_C:
-                for element in range(0,5):
-                    temp = choice_C[element]
-                    self.Phase_Dates[0][element] = temp
-
-                for element in range(5,10):
-                    temp = choice_C[element]
-                    self.Phase_Dates[1][element-5] = temp
-
-                for element in range(10,15):
-                    temp = choice_C[element]
-                    self.Phase_Dates[2][element-10] = temp
-            if user_choice_letter == selected_D:
-                for element in range(0,5):
-                    temp = choice_D[element]
-                    self.Phase_Dates[0][element] = temp
-
-                for element in range(5,10):
-                    temp = choice_D[element]
-                    self.Phase_Dates[1][element-5] = temp
-
-                for element in range(10,15):
-                    temp = choice_D[element]
-                    self.Phase_Dates[2][element-10] = temp
+        self.plan = self.breakdown(plan_options[user_choice_letter])
+        
+        i = 0; 
+        while i < 3: 
+        
+            for element in range(phase_ranges[i],phase_ranges[i+1]): 
+                temp = self.plan[element]
+                self.Phase_Dates[i][element - phase_ranges[i]] = temp 
+            i += 1;
+        
+        self.plan_choice = user_choice_letter        
+        
         return 0
+
+
 
     def breakdown(self, monthsToAdd):
+
         planEndDate = self.add_months(self.userStartDate, monthsToAdd)
         diff = planEndDate - self.userStartDate
         return_array = []
@@ -280,10 +222,12 @@ class SavingsGoal(object):
         daysPerPhase_Interval = round(float(totalDays/3))
         daysBetweenPayments_Interval = round(float(totalDays/15))
 
-        print("Format: Phase 1 Dates\t-\tPhase 2 Dates\t-\tPhase 3 Dates")
+        print("Format: Phase 1 Dates\t\t-\t\tPhase 2 Dates\t\t-\tPhase 3 Dates")
 
         return_array = self.phaseDatesPreview(totalDays)
         return return_array
+
+
 
     def phaseDatesPreview(self, totalDays):
         paymentPlanPreviewArray = []
@@ -323,6 +267,8 @@ class SavingsGoal(object):
 
         # * Take the user's year, it can't be less than the current year
         user_input = input("What is the Year of the start date?\n")
+        userYear = user_input
+        
         try:
             val = int(user_input)
             if len(user_input) != 4 or val < datetime.datetime.now().year:
@@ -332,7 +278,7 @@ class SavingsGoal(object):
         except (UnboundLocalError, ValueError) as error:
             print('Your value is not an acceptable year\nNo values were saved.')
             return 1
-
+        
         # * Month
         user_input = input("What is the Month of the start date?\n")
         try:
